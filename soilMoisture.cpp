@@ -8,7 +8,35 @@ soilMoisture::soilMoisture(uint8_t pin, uint8_t powerPin) {
   pinMode(powerPin, OUTPUT);
 }
 
-int soilMoisture::makeReading(bool interactive = false) {
+
+int soilMoisture::makeReading() {
+
+  soilMoisture::allReadingsAddedUp = 0;
+  // soilMoisture::makeIndividualReading(true);
+  for(int i = 0; i < 10; i++) {
+    soilMoisture::readings[i] = soilMoisture::makeIndividualReading(false);
+    soilMoisture::allReadingsAddedUp += soilMoisture::readings[i];
+    delay(60000);
+    Serial.print(i);
+    Serial.print(": ");
+    Serial.println(soilMoisture::readings[i]);
+  }
+
+  return soilMoisture::allReadingsAddedUp / (sizeof(soilMoisture::readings) / sizeof(int)); 
+}
+
+int soilMoisture::getPin() {
+
+  return _pin;
+}
+
+int soilMoisture::getPowerPin() {
+
+  return _powerPin;
+}
+
+int soilMoisture::makeIndividualReading(bool interactive) {
+
   digitalWrite(soilMoisture::getPowerPin(), HIGH);
   delay(100);
   int currentValue = analogRead(soilMoisture::getPin());
@@ -19,13 +47,6 @@ int soilMoisture::makeReading(bool interactive = false) {
   }
 
   digitalWrite(soilMoisture::getPowerPin(), LOW);
+
   return currentValue;
-}
-
-int soilMoisture::getPin() {
-  return _pin;
-}
-
-int soilMoisture::getPowerPin() {
-  return _powerPin;
 }
