@@ -2,7 +2,9 @@
 #include <ESP8266HTTPClient.h>
 #include "soilMoisture.h"
 
-#define SERVER_IP "192.168.178.64:5000"
+#define SERVER_IP "192.168.178.69:5000"
+
+#define DEVICE_ID "2"
 
 #ifndef STASSID
 #define STASSID "Tielbeke"
@@ -42,12 +44,12 @@ void loop() {
 
     Serial.print("[HTTP] begin...\n");
     // configure traged server and url
-    http.begin(client, "http://" SERVER_IP "/api/soilmoisture");  // HTTP
+    http.begin(client, "http://" + (String)SERVER_IP + "/api/soilmoisture");  // HTTP
     http.addHeader("Content-Type", "application/json");
 
     Serial.print("[HTTP] POST...\n");
 
-    int httpCode = http.POST("{\"moisture\":"+ (String)reading +"}");
+    int httpCode = http.POST("{\"moisture\":"+ (String)reading +", \"deviceid\":"+ (String)DEVICE_ID +"}");
       if (httpCode == HTTP_CODE_OK) {
         const String& payload = http.getString();
         Serial.println("received payload:\n<<");
@@ -64,7 +66,4 @@ void loop() {
     digitalWrite(16, HIGH);
     WiFi.reconnect();
   }
-
-
-  delay(500);
 }
