@@ -16,7 +16,7 @@ int soilMoisture::makeReading() {
   for(int i = 0; i < 10; i++) {
     soilMoisture::readings[i] = soilMoisture::makeIndividualReading(false);
     soilMoisture::allReadingsAddedUp += soilMoisture::readings[i];
-    delay(60000);
+    delay(1000);
     Serial.print(i);
     Serial.print(": ");
     Serial.println(soilMoisture::readings[i]);
@@ -38,7 +38,7 @@ int soilMoisture::getPowerPin() {
 int soilMoisture::makeIndividualReading(bool interactive) {
 
   digitalWrite(soilMoisture::getPowerPin(), HIGH);
-  delay(100);
+  delay(60000);
   int currentValue = analogRead(soilMoisture::getPin());
 
   if(interactive) {
