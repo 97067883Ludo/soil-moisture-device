@@ -44,7 +44,7 @@ void loop() {
 
     Serial.print("[HTTP] begin...\n");
     // configure traged server and url
-    http.begin(client, "http://" + (String)SERVER_IP + "/api/soilmoisture");  // HTTP
+    http.begin(client, "http://" SERVER_IP "/api/soilmoisture");  // HTTP
     http.addHeader("Content-Type", "application/json");
 
     Serial.print("[HTTP] POST...\n");
