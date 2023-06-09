@@ -1,10 +1,15 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include "soilMoisture.h"
+#include <EEPROM.h>
 
 #define SERVER_IP "192.168.178.69:5000"
+#define EEPROM_SIZE 12
+#define DEVICE_ID 12
 
-#define DEVICE_ID "2"
+String deviceName = "test";
+byte deviceIdAdress = 0;
+int deviceId = 0;
 
 #ifndef STASSID
 #define STASSID "Tielbeke"
@@ -16,6 +21,7 @@ int readings [10];
 
 void setup() {
   // put your setup code here, to run once:
+  EEPROM.begin(EEPROM_SIZE);
   Serial.begin(9600);
   pinMode(16, OUTPUT);
   digitalWrite(16, HIGH);
@@ -29,6 +35,14 @@ void setup() {
   Serial.println("");
   Serial.print("Connected! IP address: ");
   Serial.println(WiFi.localIP());
+
+  EEPROM.get(deviceIdAdress, deviceId);
+  
+  checkIfDeviceAlreadyExistsInBackend(deviceId);
+
+  Serial.print("Read Id = ");
+  Serial.println(deviceId);
+
 }
 
 void loop() {
@@ -50,7 +64,7 @@ void loop() {
     Serial.print("[HTTP] POST...\n");
 
     int httpCode = http.POST("{\"moisture\":"+ (String)reading +", \"deviceid\":"+ (String)DEVICE_ID +"}");
-      if (httpCode == HTTP_CODE_OK) {
+    if (httpCode == HTTP_CODE_OK) {
         const String& payload = http.getString();
         Serial.println("received payload:\n<<");
         Serial.println(payload);
