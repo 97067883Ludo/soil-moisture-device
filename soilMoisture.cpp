@@ -10,7 +10,7 @@ soilMoisture::soilMoisture(uint8_t pin, uint8_t powerPin) {
 
 
 int soilMoisture::makeReading() {
-
+  
   soilMoisture::allReadingsAddedUp = 0;
   // soilMoisture::makeIndividualReading(true);
   for(int i = 0; i < 10; i++) {
